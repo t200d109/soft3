@@ -1,6 +1,5 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QPixmap>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,9 +8,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     timer = new QTimer;
     connect(timer,SIGNAL(timeout()),this,SLOT(updateTime()));
-    QPixmap pix("/home/user/Qt/start/software_logo_half3.png");//間違い撲滅委員会
+    QPixmap pix("/home/user/Qt/start/software_logo_half3.png");//間違い撲滅委員会ロゴ
     QPixmap img1("/home/user/Qt/start/test1.png");//image1
-    QPixmap img2("/home/user/Qt/start/test2.png");//image2
+    QPixmap img2("/home/user/Qt/start/test2.png");//image2//
+//    QPixmap ans("/home/user/Qt/start/Result.png");//結果画像
+//    ans = ans.scaled(ui->imagelabel2->width(),ui->imagelabel2->height(),Qt::KeepAspectRatio);//結果画像の大きさを調節
+//    QImage ansimg = ans.toImage();
+        //connect(this,&MainWindow::mousePressEvent);
+    centralWidget()->setStyleSheet("background:lemonchiffon;");//背景色
+    ui->startbutton->setStyleSheet("background-color:gainsboro;");//スタートボタン色
+    ui->giveupbutton->setStyleSheet("background-color:gainsboro;");//ギブアップボタン色
     //スタート画面にロゴを表示
     int w = ui->label->width();
     int h = ui->label->height();
@@ -25,8 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     int h2 = ui->imagelabel2->height();
     ui->imagelabel2->setPixmap(img2.scaled(w2,h2,Qt::KeepAspectRatio));
     //間違いの残りの個数
-//    int num=10;
-//    ui->kosulabel->setText("あと"+num+"コ");
+    ui->allnumlabel->setText("全部で"+QString::number(num)+"こ");
 }
 
 MainWindow::~MainWindow()
@@ -35,13 +40,13 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_pushButton_released()
+void MainWindow::on_startbutton_released()
 {
     auto current_page = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(++current_page);
 }
 
-void MainWindow::on_radioButton_clicked(bool checked)
+void MainWindow::on_radioButton_clicked(bool checked)//timerstart/stop
 {
     if(checked){
         timer->start(10);
@@ -59,4 +64,48 @@ void MainWindow::updateTime()
     }else {
         ui->timelabel->setText("タイムアップ");//画面遷移にする
     }
+}
+
+
+void MainWindow::on_giveupbutton_released()//ギブアップボタン
+{
+    auto current_page = ui->stackedWidget->currentIndex();//本当は結果表示画面に行かないといけない
+    ui->stackedWidget->setCurrentIndex(++current_page);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+
+    QPoint p = ui->imagelabel2->mapFromGlobal(QCursor::pos());
+    //qDebug() << "press:" << p;
+    int x = p.x();
+    int y = p.y();
+    //85~88は本当は上でやりたい、、とりあえず保留。。ほりゅうできなくなりましたよ〜
+    QPixmap ans("/home/user/Qt/start/Result.png");//結果画像
+    ans = ans.scaled(ui->imagelabel2->width(),ui->imagelabel2->height(),Qt::KeepAspectRatio);//結果画像の大きさを調節
+    QImage ansimg = ans.toImage();
+    QColor color = ansimg.pixelColor(x,y);
+    int red = color.red();
+    if(red == 255){
+        num--;
+        for(int i=-2;i<3;i++){
+            for(int j=-2;j<3;j++){
+                QRgb pixel = ansimg.pixel(x,y);
+                pixel = qRgb(0,qGreen(pixel),qBlue(pixel));
+                ansimg.setPixel(x,y,pixel);
+            }
+        }
+        if(num == 0){
+            auto current_page = ui->stackedWidget->currentIndex();
+            ui->stackedWidget->setCurrentIndex(++current_page);
+        }
+        ui->kosulabel->setText("あと"+QString::number(num)+"こ");
+    }
+    //qDebug() << "red" << red;
+}
+
+void MainWindow::on_clearbutton_released()
+{
+    auto current_page = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(current_page=0);//ゲームクリア後スタートへ戻る
 }
