@@ -9,6 +9,8 @@
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QtCore/QDebug>
+#include <QLabel>
+#include <QImage>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,5 +39,8 @@ private:
     QTimer *timer;
     int num = 10;//間違いの個数
     unsigned long int time10 = 1000; //制限時間1000=10秒、間違いの個数、難易度によって変化？
+    QList<QLabel*> imageLabels;
+    QPixmap ans;//結果画像
+    QImage ansimg;//ansをQImageに変換
 };
 #endif // MAINWINDOW_H
