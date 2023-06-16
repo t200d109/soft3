@@ -10,12 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timer,SIGNAL(timeout()),this,SLOT(updateTime()));
     QPixmap pix("/home/user/Qt/start/software_logo_half3.png");//間違い撲滅委員会ロゴ
     QPixmap img1("/home/user/Qt/start/test1.png");//image1
+    //QPixmap img1(QString::fromStdString(g_img_path1);
     QPixmap img2("/home/user/Qt/start/test2.png");//image2//
+    //QPixmap img1(QString::fromStdString(g_img_path1);
     QPixmap comp("/home/user/Qt/start/comp.png");//クリア画面
-//    QPixmap ans("/home/user/Qt/start/Result.png");//結果画像
-//    ans = ans.scaled(ui->imagelabel2->width(),ui->imagelabel2->height(),Qt::KeepAspectRatio);//結果画像の大きさを調節
-//    QImage ansimg = ans.toImage();
-        //connect(this,&MainWindow::mousePressEvent);
     centralWidget()->setStyleSheet("background:lemonchiffon;");//背景色
     ui->startbutton->setStyleSheet("background-color:gainsboro;");//スタートボタン色
     ui->giveupbutton->setStyleSheet("background-color:gainsboro;");//ギブアップボタン色
@@ -96,31 +94,36 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     //qDebug() << "press:" << p;
     int x = p.x();
     int y = p.y();
-    //85~88は本当は上でやりたい、、とりあえず保留。。ほりゅうできなくなりましたよ〜
-    QPixmap ans("/home/user/Qt/start/Result.png");//結果画像
+    QPixmap ans("/home/user/Qt/start/sample_ans.png");//結果画像
     ans = ans.scaled(ui->imagelabel2->width(),ui->imagelabel2->height(),Qt::KeepAspectRatio);//結果画像の大きさを調節
     QImage ansimg = ans.toImage();
     QColor color = ansimg.pixelColor(x,y);
-    qDebug() << ansimg.pixelColor(x,y);
+    //qDebug() << ansimg.pixelColor(x,y);
     int red = color.red();
     if(red == 255){//正解だったとき
         num--;
-        for(int i=-2;i<3;i++){
-            for(int j=-2;j<3;j++){
-                QRgb pixel = ansimg.pixel(x,y);
+        for(int i=-10;i<11;i++){
+            for(int j=-10;j<11;j++){
+                QRgb pixel = ansimg.pixel(x+i,y+j);
                 pixel = qRgb(0,qGreen(pixel),qBlue(pixel));
-                ansimg.setPixel(x,y,pixel);
+                ansimg.setPixel(x+i,y+j,pixel);
             }
         }
+
+
+
+        QString savePath = "/home/user/Qt/start/sample_ans.png";
+        ansimg.save(savePath);
+
         //正解した箇所に丸を表示
         QLabel* imageLabel = new QLabel(this);
-        QPixmap cir("/home/user/Qt/start/cir.jpg");
+        QPixmap cir("/home/user/Qt/start/maruu.png");
         imageLabel->setPixmap(cir);
         imageLabel->move(pos.x()-20,pos.y()-20);//ーの値考える。
         imageLabel->show();
         imageLabels.append(imageLabel);//keep
-        if(num == 0){
-            for(QLabel* label : imageLabels){
+        if(num == 0){//間違いをすべて見つけたとき
+            for(QLabel* label : imageLabels){//○をすべて削除
                 label->deleteLater();
             }
             imageLabels.clear();
@@ -129,6 +132,11 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
         }
         ui->kosulabel->setText("あと"+QString::number(num)+"こ");
+    }
+    else{//不正解だったとき
+//        QSoundEffect buu;//効果音
+//        buu.setSource(QUr1::fromLocalFile("/home/user/Qt/start/buu.mp3"));
+//        soundEffect.play();
     }
     //qDebug() << "red" << red;
 }
