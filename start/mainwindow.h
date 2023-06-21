@@ -11,7 +11,8 @@
 #include <QtCore/QDebug>
 #include <QLabel>
 #include <QImage>
-//#include <QSoundEffect>
+#include <QSoundEffect>
+#include <QtMultimedia/QMediaPlayer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

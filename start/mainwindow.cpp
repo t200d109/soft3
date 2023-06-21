@@ -143,6 +143,10 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         ui->kosulabel->setText("あと"+QString::number(num)+"こ");
     }
     else{//不正解だったとき
+        QString buufilePath = "/home/user/Qt/start/buu.mp3";
+        QMediaPlayer* player = new QMediaPlayer;
+        player->setMedia(QUrl::fromLocalFile(buufilePath));
+        player->play();
 
     }
     //qDebug() << "red" << red;
